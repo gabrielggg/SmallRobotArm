@@ -2,33 +2,18 @@
 Simple script to move my tiny 6dof robotic arm
 */
 #include <math.h>
+#include <VarSpeedServo.h> 
+ 
+VarSpeedServo myservo0;
+VarSpeedServo myservo1;
+VarSpeedServo myservo2;
+VarSpeedServo myservo3;
+VarSpeedServo myservo4;
+VarSpeedServo myservo5;
 
 #define PI 3.1415926535897932384626433832795
 
-//driver for the axis 1
-#define PUL1_PIN 39
-#define DIR1_PIN 37
-//driver for the axis 2
-#define PUL2_PIN 43
-#define DIR2_PIN 41
-//driver for the axis 3
-#define PUL3_PIN 47
-#define DIR3_PIN 45
-//driver for the axis 4
-#define PUL4_PIN 46
-#define DIR4_PIN 48
-//driver for the axis 5
-#define PUL5_PIN A6
-#define DIR5_PIN A7
-//driver for the axis 6
-#define PUL6_PIN A0
-#define DIR6_PIN A1
 
-//enable pin for the axis 3, 2 and 1
-#define EN321_PIN 32
-#define EN4_PIN A8
-#define EN5_PIN A2
-#define EN6_PIN 38
 
 double curPos1 = 0.0;
 double curPos2 = 0.0;
@@ -37,12 +22,7 @@ double curPos4 = 0.0;
 double curPos5 = 0.0;
 double curPos6 = 0.0;
 
-boolean PULstat1 = 0;
-boolean PULstat2 = 0;
-boolean PULstat3 = 0;
-boolean PULstat4 = 0;
-boolean PULstat5 = 0;
-boolean PULstat6 = 0;
+
 
 //robot geometry
 const double dl1 = 360.0/200.0/32.0/4.8;
@@ -61,154 +41,18 @@ const double d6 = 28.0;
 
 void setup()
 {
-  pinMode(PUL1_PIN, OUTPUT);
-  pinMode(DIR1_PIN, OUTPUT);
-  pinMode(PUL2_PIN, OUTPUT);
-  pinMode(DIR2_PIN, OUTPUT);
-  pinMode(PUL3_PIN, OUTPUT);
-  pinMode(DIR3_PIN, OUTPUT);
-  pinMode(PUL4_PIN, OUTPUT);
-  pinMode(DIR4_PIN, OUTPUT);
-  pinMode(PUL5_PIN, OUTPUT);
-  pinMode(DIR5_PIN, OUTPUT);
-  pinMode(PUL6_PIN, OUTPUT);
-  pinMode(DIR6_PIN, OUTPUT);
-
-  pinMode(EN321_PIN, OUTPUT);
-  pinMode(EN4_PIN, OUTPUT);
-  pinMode(EN5_PIN, OUTPUT);
-  pinMode(EN6_PIN, OUTPUT);
-  
-  digitalWrite(PUL1_PIN, LOW); // gear ratio = 96/20 = 4.8
-  digitalWrite(DIR1_PIN, LOW); //LOW = negative direction
-  
-  digitalWrite(PUL2_PIN, LOW); // gear ratio = 4
-  digitalWrite(DIR2_PIN, LOW); //LOW = positive direction
-  
-  digitalWrite(PUL3_PIN, LOW); // gear ratio = 5
-  digitalWrite(DIR3_PIN, LOW); //LOW = negative direction
-  
-  digitalWrite(PUL4_PIN, LOW); // gear ratio = 56/20 = 2.8
-  digitalWrite(DIR4_PIN, LOW); //LOW = positive direction
-  
-  digitalWrite(PUL5_PIN, LOW); // gear ratio = 42/20 = 2.1
-  digitalWrite(DIR5_PIN, LOW); //LOW = positive direction
-  
-  digitalWrite(PUL6_PIN, LOW); // gear ratio = 1
-  digitalWrite(DIR6_PIN, LOW); //LOW = positive direction
-
-  // all joints disabled!
-  digitalWrite(EN321_PIN, HIGH);
-  digitalWrite(EN4_PIN, HIGH);
-  digitalWrite(EN5_PIN, HIGH);
-  digitalWrite(EN6_PIN, HIGH); 
-
-  //Serial.begin(9600);
+  myservo0.attach(9);  // attaches the servo on pin 9 to the servo object 
+  myservo1.attach(8);  // attaches the servo on pin 9 to the servo object 
+  myservo2.attach(7);  // attaches the servo on pin 9 to the servo object 
+  myservo3.attach(6);  // attaches the servo on pin 9 to the servo object 
+  myservo4.attach(5);  // attaches the servo on pin 9 to the servo object 
+  myservo5.attach(4);  // attaches the servo on pin 9 to the servo object 
 }
 
 void loop()
 {
   // enable all joints
-  delay(10000);
-  digitalWrite(EN321_PIN, LOW);
-  digitalWrite(EN4_PIN, LOW);
-  digitalWrite(EN5_PIN, LOW);
-  digitalWrite(EN6_PIN, LOW);
-  delay(1000);
-  // go to the home position (all joints equal to 0)
-  // joint #2
-  digitalWrite(DIR2_PIN, HIGH);
-  int delValue=4000;
-  int incValue = 7;
-  int accRate=530;
-  int totSteps=2791*2;
-  for (int i=0; i < totSteps; i++)
-  {
-   if (totSteps > (2*accRate + 1)){
-      if (i < accRate){
-        //acceleration
-        delValue = delValue - incValue;
-      } else if (i > (totSteps - accRate)){
-        //decceleration
-        delValue = delValue + incValue;
-      }
-    } else {
-      //no space for proper acceleration/decceleration
-      if (i < ((totSteps - (totSteps % 2))/2)){
-        //acceleration
-        delValue = delValue - incValue;
-      } else if (i > ((totSteps + (totSteps % 2))/2)){
-        //decceleration
-        delValue = delValue + incValue;
-      }
-    }
-    digitalWrite(PUL2_PIN, HIGH);
-    delayMicroseconds(delValue);
-    digitalWrite(PUL2_PIN, LOW);
-    delayMicroseconds(delValue);
-  }
-  // joint #3
-  digitalWrite(DIR3_PIN, HIGH);
-  delValue=4000;
-  incValue=7;
-  accRate=530;
-  totSteps=6569;
-  for (int i=0; i < totSteps; i++)
-  {
-   if (totSteps > (2*accRate + 1)){
-      if (i < accRate){
-        //acceleration
-        delValue = delValue - incValue;
-      } else if (i > (totSteps - accRate)){
-        //decceleration
-        delValue = delValue + incValue;
-      }
-    } else {
-      //no space for proper acceleration/decceleration
-      if (i < ((totSteps - (totSteps % 2))/2)){
-        //acceleration
-        delValue = delValue - incValue;
-      } else if (i > ((totSteps + (totSteps % 2))/2)){
-        //decceleration
-        delValue = delValue + incValue;
-      }
-    }
-    digitalWrite(PUL3_PIN, HIGH);
-    delayMicroseconds(delValue);
-    digitalWrite(PUL3_PIN, LOW);
-    delayMicroseconds(delValue);
-  }
-  // joint #5
-  digitalWrite(DIR5_PIN, HIGH);
-  delValue=4000;
-  incValue=7;
-  accRate=530;
-  totSteps=90/dl5;
-  for (int i=0; i < totSteps; i++)
-  {
-   if (totSteps > (2*accRate + 1)){
-      if (i < accRate){
-        //acceleration
-        delValue = delValue - incValue;
-      } else if (i > (totSteps - accRate)){
-        //decceleration
-        delValue = delValue + incValue;
-      }
-    } else {
-      //no space for proper acceleration/decceleration
-      if (i < ((totSteps - (totSteps % 2))/2)){
-        //acceleration
-        delValue = delValue - incValue;
-      } else if (i > ((totSteps + (totSteps % 2))/2)){
-        //decceleration
-        delValue = delValue + incValue;
-      }
-    }
-    digitalWrite(PUL5_PIN, HIGH);
-    delayMicroseconds(delValue);
-    digitalWrite(PUL5_PIN, LOW);
-    delayMicroseconds(delValue);
-  }
+  
   
   //--------------------------------------------------------GoGoGo-------------------
   curPos1=0.0;
@@ -279,107 +123,8 @@ void loop()
   
   // come back from home position to fold position
   // joint #5
-  digitalWrite(DIR5_PIN, LOW);
-  delValue=4000;
-  incValue=7;
-  accRate=530;
-  totSteps=90/dl5;
-  for (int i=0; i < totSteps; i++)
-  {
-   if (totSteps > (2*accRate + 1)){
-      if (i < accRate){
-        //acceleration
-        delValue = delValue - incValue;
-      } else if (i > (totSteps - accRate)){
-        //decceleration
-        delValue = delValue + incValue;
-      }
-    } else {
-      //no space for proper acceleration/decceleration
-      if (i < ((totSteps - (totSteps % 2))/2)){
-        //acceleration
-        delValue = delValue - incValue;
-      } else if (i > ((totSteps + (totSteps % 2))/2)){
-        //decceleration
-        delValue = delValue + incValue;
-      }
-    }
-    digitalWrite(PUL5_PIN, HIGH);
-    delayMicroseconds(delValue);
-    digitalWrite(PUL5_PIN, LOW);
-    delayMicroseconds(delValue);
-  }
-  // joint #3
-  digitalWrite(DIR3_PIN, LOW);
-  delValue=4000;
-  incValue=7;
-  accRate=530;
-  totSteps=6569;
-  for (int i=0; i < totSteps; i++)
-  {
-   if (totSteps > (2*accRate + 1)){
-      if (i < accRate){
-        //acceleration
-        delValue = delValue - incValue;
-      } else if (i > (totSteps - accRate)){
-        //decceleration
-        delValue = delValue + incValue;
-      }
-    } else {
-      //no space for proper acceleration/decceleration
-      if (i < ((totSteps - (totSteps % 2))/2)){
-        //acceleration
-        delValue = delValue - incValue;
-      } else if (i > ((totSteps + (totSteps % 2))/2)){
-        //decceleration
-        delValue = delValue + incValue;
-      }
-    }
-    digitalWrite(PUL3_PIN, HIGH);
-    delayMicroseconds(delValue);
-    digitalWrite(PUL3_PIN, LOW);
-    delayMicroseconds(delValue);
-  }
-  // joint #2
-  digitalWrite(DIR2_PIN, LOW);
-  delValue=4000;
-  incValue=7;
-  accRate=530;
-  totSteps=2791*2;
-  for (int i=0; i < totSteps; i++)
-  {
-   if (totSteps > (2*accRate + 1)){
-      if (i < accRate){
-        //acceleration
-        delValue = delValue - incValue;
-      } else if (i > (totSteps - accRate)){
-        //decceleration
-        delValue = delValue + incValue;
-      }
-    } else {
-      //no space for proper acceleration/decceleration
-      if (i < ((totSteps - (totSteps % 2))/2)){
-        //acceleration
-        delValue = delValue - incValue;
-      } else if (i > ((totSteps + (totSteps % 2))/2)){
-        //decceleration
-        delValue = delValue + incValue;
-      }
-    }
-    digitalWrite(PUL2_PIN, HIGH);
-    delayMicroseconds(delValue);
-    digitalWrite(PUL2_PIN, LOW);
-    delayMicroseconds(delValue);
-  }
-  // all joints disabled!
-  digitalWrite(EN321_PIN, HIGH);
-  digitalWrite(EN4_PIN, HIGH);
-  digitalWrite(EN5_PIN, HIGH);
-  digitalWrite(EN6_PIN, HIGH); 
-  // wait 15 minutes
-  delay(900000);
-}
-
+  
+///////////////////////////// end loop
 
 void goStrightLine(float* xfi, float* xff, float vel0, float acc0, float velini, float velfin){
   //
@@ -388,254 +133,38 @@ void goStrightLine(float* xfi, float* xff, float vel0, float acc0, float velini,
   lmax = max(lmax,abs(xff[3]-xfi[3]));
   lmax = max(lmax,abs(xff[4]-xfi[4]));
   lmax = max(lmax,abs(xff[5]-xfi[5]));
-  unsigned long preMil = micros();
-  double l = 0.0;
-  vel0 = min(vel0,sqrt(lmax*acc0+0.5*velini*velini+0.5*velfin*velfin));
-  unsigned long curMil = micros();
-  unsigned long t = 0;
-  double tap = vel0/acc0-velini/acc0;
-  double lap = velini*tap+acc0*tap*tap/2.0;
-  double lcsp = lmax-(vel0*vel0/2.0/acc0-velfin*velfin/2.0/acc0);
-  double tcsp = (lcsp-lap)/vel0+tap;
-  double tfin = vel0/acc0-velfin/acc0+tcsp;
-  while (curMil-preMil<=tfin){
-    t = curMil-preMil;
-    //acceleration phase
-    if (t<=tap) {
-      l = velini*t+acc0*t*t/2.0;
-    }
-    //contant maximum speed phase
-    if (t>tap && t<=tcsp) {
-      l = lap+vel0*(t-tap);
-    }
-    //deceleration phase
-    if (t>tcsp) {
-      l = lcsp+vel0*(t-tcsp)-acc0*(t-tcsp)*(t-tcsp)/2.0;
-    }
+  float joint0_move = xff[0]-xfi[0];
+  float joint1_move = xff[1]-xfi[1];
+  float joint2_move = xff[2]-xfi[2];
+  float joint3_move = xff[3]-xfi[3];
+  float joint4_move = xff[4]-xfi[4];
+  float joint5_move = xff[5]-xfi[5];
   
-    //trajectory x and y as a function of l
-    float Xx[6];
-    Xx[0]=xfi[0]+(xff[0]-xfi[0])/lmax*l;
-    Xx[1]=xfi[1]+(xff[1]-xfi[1])/lmax*l;
-    Xx[2]=xfi[2]+(xff[2]-xfi[2])/lmax*l;
-    Xx[3]=xfi[3]+(xff[3]-xfi[3])/lmax*l;
-    Xx[4]=xfi[4]+(xff[4]-xfi[4])/lmax*l;
-    Xx[5]=xfi[5]+(xff[5]-xfi[5])/lmax*l;
-    
-    goTrajectory(Xx);
-    curMil = micros();
-  }
+
+  double tfin = (lmax)/vel0;
+  
+  
+  vel_joint0 = joint0_move/tfin;
+  vel_joint1 = joint1_move/tfin;
+  vel_joint2 = joint2_move/tfin;
+  vel_joint3 = joint3_move/tfin;
+  vel_joint4 = joint4_move/tfin;
+  vel_joint5 = joint5_move/tfin;
+  
+  
+  
+  
 }
 
-void goTrajectory(float* Jf){
-  
-  //execution
-  int delF=2;
-  // joint #1
-  if (Jf[0]-curPos1>0.0) { // positive direction of rotation
-    digitalWrite(DIR1_PIN, HIGH);
-    while (Jf[0]-curPos1>dl1/2.0) {
-      if (PULstat1 == 0) {
-        digitalWrite(PUL1_PIN, HIGH);
-        PULstat1 = 1;
-      } else {
-        digitalWrite(PUL1_PIN, LOW);
-        PULstat1 = 0;
-      }
-      //curPos1 = Jf[0];
-      curPos1 = curPos1 + dl1/2.0;
-      if (Jf[0]-curPos1>dl1/2.0) {
-        delayMicroseconds(delF);
-      }
-    }
-  } else {
-    digitalWrite(DIR1_PIN, LOW);
-    while (-Jf[0]+curPos1>dl1/2.0) {
-      if (PULstat1 == 0) {
-        digitalWrite(PUL1_PIN, HIGH);
-        PULstat1 = 1;
-      } else {
-        digitalWrite(PUL1_PIN, LOW);
-        PULstat1 = 0;
-      }
-      //curPos1 = Jf[0];
-      curPos1 = curPos1 - dl1/2.0;
-      if (-Jf[0]+curPos1>dl1/2.0) {
-        delayMicroseconds(delF);
-      }
-    }
-  }
-  // joint #2
-  if (Jf[1]-curPos2>0.0) { // positive direction of rotation
-    digitalWrite(DIR2_PIN, HIGH);
-    while (Jf[1]-curPos2>dl2/2.0) {
-      if (PULstat2 == 0) {
-        digitalWrite(PUL2_PIN, HIGH);
-        PULstat2 = 1;
-      } else {
-        digitalWrite(PUL2_PIN, LOW);
-        PULstat2 = 0;
-      }
-      //curPos2 = Jf[1];
-      curPos2 = curPos2 + dl2/2.0;
-      if (Jf[1]-curPos2>dl2/2.0) {
-        delayMicroseconds(delF);
-      }
-    }
-  } else {
-    digitalWrite(DIR2_PIN, LOW);
-    while (-Jf[1]+curPos2>dl2/2.0) {
-      if (PULstat2 == 0) {
-        digitalWrite(PUL2_PIN, HIGH);
-        PULstat2 = 1;
-      } else {
-        digitalWrite(PUL2_PIN, LOW);
-        PULstat2 = 0;
-      }
-      //curPos2 = Jf[1];
-      curPos2 = curPos2 - dl2/2.0;
-      if (-Jf[1]+curPos2>dl2/2.0) {
-        delayMicroseconds(delF);
-      }
-    }
-  }
-  // joint #3
-  if (Jf[2]-curPos3>0.0) { // positive direction of rotation
-    digitalWrite(DIR3_PIN, LOW);
-    while (Jf[2]-curPos3>dl3/2.0) {
-      if (PULstat3 == 0) {
-        digitalWrite(PUL3_PIN, HIGH);
-        PULstat3 = 1;
-      } else {
-        digitalWrite(PUL3_PIN, LOW);
-        PULstat3 = 0;
-      }
-      //curPos3 = Jf[2];
-      curPos3 = curPos3 + dl3/2.0;
-      if (Jf[2]-curPos3>dl3/2.0) {
-        delayMicroseconds(delF);
-      }
-    }
-  } else {
-    digitalWrite(DIR3_PIN, HIGH);
-    while (-Jf[2]+curPos3>dl3/2.0) {
-      if (PULstat3 == 0) {
-        digitalWrite(PUL3_PIN, HIGH);
-        PULstat3 = 1;
-      } else {
-        digitalWrite(PUL3_PIN, LOW);
-        PULstat3 = 0;
-      }
-      //curPos3 = Jf[2];
-      curPos3 = curPos3 - dl3/2.0;
-      if (-Jf[2]+curPos3>dl3/2.0) {
-        delayMicroseconds(delF);
-      }
-    }
-  }
-  // joint #4
-  if (Jf[3]-curPos4>0.0) { // positive direction of rotation
-    digitalWrite(DIR4_PIN, HIGH);
-    while (Jf[3]-curPos4>dl4/2.0) {
-      if (PULstat4 == 0) {
-        digitalWrite(PUL4_PIN, HIGH);
-        PULstat4 = 1;
-      } else {
-        digitalWrite(PUL4_PIN, LOW);
-        PULstat4 = 0;
-      }
-      //curPos4 = Jf[3];
-      curPos4 = curPos4 + dl4/2.0;
-      if (Jf[3]-curPos4>dl4/2.0) {
-        delayMicroseconds(delF);
-      }
-    }
-  } else {
-    digitalWrite(DIR4_PIN, LOW);
-    while (-Jf[3]+curPos4>dl4/2.0) {
-      if (PULstat4 == 0) {
-        digitalWrite(PUL4_PIN, HIGH);
-        PULstat4 = 1;
-      } else {
-        digitalWrite(PUL4_PIN, LOW);
-        PULstat4 = 0;
-      }
-      //curPos4 = Jf[3];
-      curPos4 = curPos4 - dl4/2.0;
-      if (-Jf[3]+curPos4>dl4/2.0) {
-        delayMicroseconds(delF);
-      }
-    }
-  }
-  // joint #5
-  if (Jf[4]-curPos5>0.0) { // positive direction of rotation
-    digitalWrite(DIR5_PIN, HIGH);
-    while (Jf[4]-curPos5>dl5/2.0) {
-      if (PULstat5 == 0) {
-        digitalWrite(PUL5_PIN, HIGH);
-        PULstat5 = 1;
-      } else {
-        digitalWrite(PUL5_PIN, LOW);
-        PULstat5 = 0;
-      }
-      //curPos5 = Jf[4];
-      curPos5 = curPos5 + dl5/2.0;
-      if (Jf[4]-curPos5>dl5/2.0) {
-        delayMicroseconds(delF);
-      }
-    }
-  } else {
-    digitalWrite(DIR5_PIN, LOW);
-    while (-Jf[4]+curPos5>dl5/2.0) {
-      if (PULstat5 == 0) {
-        digitalWrite(PUL5_PIN, HIGH);
-        PULstat5 = 1;
-      } else {
-        digitalWrite(PUL5_PIN, LOW);
-        PULstat5 = 0;
-      }
-      //curPos5 = Jf[4];
-      curPos5 = curPos5 - dl5/2.0;
-      if (-Jf[4]+curPos5>dl5/2.0) {
-        delayMicroseconds(delF);
-      }
-    }
-  }
-  // joint #6
-  if (Jf[5]-curPos6>0.0) { // positive direction of rotation
-    digitalWrite(DIR6_PIN, HIGH);
-    while (Jf[5]-curPos6>dl6/2.0) {
-      if (PULstat6 == 0) {
-        digitalWrite(PUL6_PIN, HIGH);
-        PULstat6 = 1;
-      } else {
-        digitalWrite(PUL6_PIN, LOW);
-        PULstat6 = 0;
-      }
-      //curPos6 = Jf[5];
-      curPos6 = curPos6 + dl6/2.0;
-      if (Jf[5]-curPos6>dl6/2.0) {
-        delayMicroseconds(delF);
-      }
-    }
-  } else {
-    digitalWrite(DIR6_PIN, LOW);
-    while (-Jf[5]+curPos6>dl6/2.0) {
-      if (PULstat6 == 0) {
-        digitalWrite(PUL6_PIN, HIGH);
-        PULstat6 = 1;
-      } else {
-        digitalWrite(PUL6_PIN, LOW);
-        PULstat6 = 0;
-      }
-      //curPos6 = Jf[5];
-      curPos6 = curPos6 - dl6/2.0;
-      if (-Jf[5]+curPos6>dl6/2.0) {
-        delayMicroseconds(delF);
-      }
-    }
-  }
-}
+
+///// new function
+
+
+
+
+///// new function
+
+
 
 void InverseK(float* Xik, float* Jik)
 {
@@ -720,6 +249,9 @@ void InverseK(float* Xik, float* Jik)
   // rad to deg
   MatrixScale(Jik, 6, 1, 180.0/PI); // Jik=Jik/pi*180;
 }
+
+///// new function
+
 
 void ForwardK(float* Jfk, float* Xfk)
 {
