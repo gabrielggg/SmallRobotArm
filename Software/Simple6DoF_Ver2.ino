@@ -151,6 +151,13 @@ void goStrightLine(float* xfi, float* xff, float vel0, float acc0, float velini,
   vel_joint4 = joint4_move/tfin;
   vel_joint5 = joint5_move/tfin;
   
+  myservo0.write(joint0_move, vel_joint0, true);        // move to 180 degrees, use a speed of 30, wait until move is complete
+  myservo1.write(joint1_move, vel_joint1, true);
+  myservo2.write(joint2_move, vel_joint2, true); 
+  myservo3.write(joint3_move, vel_joint3, true); 
+  myservo4.write(joint4_move, vel_joint4, true); 
+  myservo5.write(joint5_move, vel_joint5, true); 
+  
   
   
   
