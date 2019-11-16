@@ -140,6 +140,12 @@ void goStrightLine(float* xfi, float* xff, float vel0, float acc0, float velini,
   float joint4_move = xff[4]-xfi[4];
   float joint5_move = xff[5]-xfi[5];
   
+  float joint0_servo_angle = xff[0]+90;
+  float joint1_servo_angle = xff[1]+90;
+  float joint2_servo_angle = xff[2]+90;
+  float joint3_servo_angle = xff[3]+90;
+  float joint4_servo_angle = xff[4]+90;
+  float joint5_servo_angle = xff[5]+90;
 
   double tfin = (lmax)/vel0;
   
@@ -151,25 +157,18 @@ void goStrightLine(float* xfi, float* xff, float vel0, float acc0, float velini,
   vel_joint4 = joint4_move/tfin;
   vel_joint5 = joint5_move/tfin;
   
-  myservo0.write(joint0_move, vel_joint0, true);        // move to 180 degrees, use a speed of 30, wait until move is complete
-  myservo1.write(joint1_move, vel_joint1, true);
-  myservo2.write(joint2_move, vel_joint2, true); 
-  myservo3.write(joint3_move, vel_joint3, true); 
-  myservo4.write(joint4_move, vel_joint4, true); 
-  myservo5.write(joint5_move, vel_joint5, true); 
+  myservo0.write(joint0_servo_angle, vel_joint0, true);        
+  myservo1.write(joint1_servo_angle, vel_joint1, true);
+  myservo2.write(joint2_servo_angle, vel_joint2, true); 
+  myservo3.write(joint3_servo_angle, vel_joint3, true); 
+  myservo4.write(joint4_servo_angle, vel_joint4, true); 
+  myservo5.write(joint5_servo_angle, vel_joint5, true); 
   
   
   
   
 }
 
-
-///// new function
-
-
-
-
-///// new function
 
 
 
